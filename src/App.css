@@ -7,3 +7,15 @@
   display: flex;
   justify-content: center;
 }
+
+.moviesList {
+  display: flex;
+  flex-wrap: wrap; /* indicar elementos en varias lineas */
+  justify-content: center;
+  padding: 16px;
+}
+
+.MoviesList-item {
+  margin: 0 10px 24px 10px;
+  width: 27%;
+}
