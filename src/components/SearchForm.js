@@ -1,46 +1,42 @@
-import React, { Component } from "react";
+import React, { useState } from 'react'
+import axios from 'axios'
 
-const API_KEY = "36b28ad7";
+const API_KEY = '36b28ad7'
 
-export class SearchForm extends Component {
-  state = {
-    inputMovie: "",
-  };
+export const SearchForm = ({ onResult }) => {
+  const [inputMovie, setInputMovie] = useState('')
 
-  handleChange = (e) => {
-    this.setState({ inputMovie: e.target.value });
-  };
+  const handleChange = ({ target: { value } }) => setInputMovie(value)
 
-  handleSubmit = (e) => {
-    e.preventDefault();
-    const { inputMovie } = this.state;
-
-    fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=${inputMovie}`)
-      .then((res) => res.json())
-      .then((data) => {
-        const { Search = [], totalResults = "" } = data;
-        console.log({ Search, totalResults });
-        this.props.onResult(Search);
-      });
-  };
-
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <div className="field has-addons">
-          <div className="control">
-            <input
-              className="input"
-              onChange={this.handleChange}
-              type="text"
-              placeholder="Movies to search..."
-            />
-          </div>
-          <div className="control">
-            <button className="button is-info">Search</button>
-          </div>
-        </div>
-      </form>
-    );
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault()
+      const { data } = await axios.get(
+        `http://www.omdbapi.com/?apikey=${API_KEY}&s=${inputMovie}`
+      )
+      const { Search = [], totalResults = '' } = data
+      console.log({ Search, totalResults })
+      onResult(Search)
+    } catch (e) {
+      console.log('error', e)
+    }
   }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div className="field has-addons">
+        <div className="control">
+          <input
+            className="input"
+            onChange={handleChange}
+            type="text"
+            placeholder="Movies to search..."
+          />
+        </div>
+        <div className="control">
+          <button className="button is-info">Search</button>
+        </div>
+      </div>
+    </form>
+  )
 }

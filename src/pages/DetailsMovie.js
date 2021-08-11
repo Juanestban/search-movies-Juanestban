@@ -1,48 +1,55 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { ButtonHome } from "../components/ButtonHome";
+import React, { useState, useEffect } from 'react'
+import PropTypes from 'prop-types'
+import axios from 'axios'
+import { ButtonHome } from '../components/ButtonHome'
 
-const API_KEY = "36b28ad7";
+const API_KEY = '36b28ad7'
 
-export class DetailsMovie extends Component {
-  static propTypes = {
-    match: PropTypes.shape({
-      params: PropTypes.object,
-      isExact: PropTypes.bool,
-      path: PropTypes.string,
-      url: PropTypes.string,
-    }),
-  };
+const initialMovieState = {
+  Title: '',
+  Poster: '',
+  Actors: '',
+  Metascore: '',
+  Plot: '',
+}
 
-  state = { movie: {} };
+export const DetailsMovie = ({ match }) => {
+  const [movie, setMovie] = useState(initialMovieState)
 
-  fetchMovie({ id }) {
-    fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&i=${id}`)
-      .then((res) => res.json())
-      .then((movie) => {
-        this.setState({ movie });
-      });
+  const fetchMovie = async ({ id }) => {
+    try {
+      const { data } = await axios.get(
+        `http://www.omdbapi.com/?apikey=${API_KEY}&i=${id}`
+      )
+      setMovie(data)
+    } catch (e) {
+      console.log('error details', e)
+    }
   }
 
-  componentDidMount() {
-    console.log(this.props);
-    const { id } = this.props.match.params;
-    this.fetchMovie({ id });
-  }
+  useEffect(() => {
+    const { id } = match.params
+    fetchMovie({ id })
+  })
 
-  render() {
-    const { Title, Poster, Actors, Metascore, Plot } = this.state.movie;
+  return (
+    <div>
+      <h1>{movie.Title}</h1>
+      <img src={movie.Poster} alt={movie.Title} />
+      <h3>{movie.Actors}</h3>
+      <span>{movie.Metascore}</span>
+      <p>{movie.Plot}</p>
+      <br />
+      <ButtonHome />
+    </div>
+  )
+}
 
-    return (
-      <div>
-        <h1>{Title}</h1>
-        <img src={Poster} alt={Title} />
-        <h3>{Actors}</h3>
-        <span>{Metascore}</span>
-        <p>{Plot}</p>
-        <br />
-        <ButtonHome />
-      </div>
-    );
-  }
+DetailsMovie.propTypes = {
+  match: PropTypes.shape({
+    params: PropTypes.object,
+    isExact: PropTypes.bool,
+    path: PropTypes.string,
+    url: PropTypes.string,
+  }),
 }
