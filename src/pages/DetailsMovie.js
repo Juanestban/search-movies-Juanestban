@@ -19,7 +19,7 @@ export const DetailsMovie = ({ match }) => {
   const fetchMovie = async ({ id }) => {
     try {
       const { data } = await axios.get(
-        `http://www.omdbapi.com/?apikey=${API_KEY}&i=${id}`
+        `http://omdbapi.com/?apikey=${API_KEY}&i=${id}`
       )
       setMovie(data)
     } catch (e) {

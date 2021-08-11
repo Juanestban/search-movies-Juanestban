@@ -12,7 +12,7 @@ export const SearchForm = ({ onResult }) => {
     try {
       e.preventDefault()
       const { data } = await axios.get(
-        `http://www.omdbapi.com/?apikey=${API_KEY}&s=${inputMovie}`
+        `http://omdbapi.com/?apikey=${API_KEY}&s=${inputMovie}`
       )
       const { Search = [], totalResults = '' } = data
       console.log({ Search, totalResults })
